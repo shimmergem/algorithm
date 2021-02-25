@@ -25,9 +25,9 @@ var serialize = function(root) {
   return nodes
   function travers(root) {
     if (root) {
-      nodes = nodes ? `${nodes},${root.val}` : `${root.val}`
       travers(root.left)
       travers(root.right)
+      nodes = nodes ? `${nodes},${root.val}` : `${root.val}`
     } else {
       nodes = nodes ? `${nodes},#` : '#'
     }
@@ -45,11 +45,11 @@ var deserialize = function(data) {
   return decode(data)
   function decode(data) {
     if (data.length < 1) return null
-    let val = data.shift()
+    let val = data.pop()
     if (val !== '#') {
       let node = {val: Number(val)}
-      node.left = decode(data)
       node.right = decode(data)
+      node.left = decode(data)
       return node
     }  else {
       return null
