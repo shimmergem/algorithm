@@ -20,18 +20,21 @@
  * @return {string}
  */
 var serialize = function(root) {
-  let nodes = ''
-  travers(root)
-  return nodes
-  function travers(root) {
-    if (root) {
-      travers(root.left)
-      travers(root.right)
-      nodes = nodes ? `${nodes},${root.val}` : `${root.val}`
+  if (!root) return ''
+  let str = ''
+  let queue = [root]
+  while(queue.length > 0) {
+    let node = queue.shift()
+    if (node) {
+      let {val, left, right} = node
+      queue.push(left)
+      queue.push(right)
+      str = str ? `${str},${val}` : `${val}`
     } else {
-      nodes = nodes ? `${nodes},#` : '#'
+      str = str ? `${str},#` : `#`
     }
   }
+  return str
 };
 
 /**
@@ -41,20 +44,29 @@ var serialize = function(root) {
  * @return {TreeNode}
  */
 var deserialize = function(data) {
-  data = data.split(',')
-  return decode(data)
-  function decode(data) {
-    if (data.length < 1) return null
-    let val = data.pop()
-    if (val !== '#') {
-      let node = {val: Number(val)}
-      node.right = decode(data)
-      node.left = decode(data)
-      return node
-    }  else {
-      return null
+  if (!data) return null
+  let dataArray = data.split(',')
+  let root = new TreeNode(dataArray[0])
+  let queue = [root]
+  let i = 1
+  while(i < dataArray.length) {
+    let parent = queue.shift()
+    let left = dataArray[i++]
+    if (left !== '#') {
+      parent.left = new TreeNode(left)
+      queue.push(parent.left)
+    } else {
+      parent.left = null
+    }
+    let right = dataArray[i++]
+    if (right !== '#') {
+      parent.right = new TreeNode(right)
+      queue.push( parent.right)
+    } else {
+      parent.right = null
     }
   }
+  return root
 };
 
 /**
