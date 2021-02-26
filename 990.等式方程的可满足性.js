@@ -1,3 +1,31 @@
+/*
+ * @lc app=leetcode.cn id=990 lang=javascript
+ *
+ * [990] 等式方程的可满足性
+ */
+
+// @lc code=start
+/**
+ * @param {string[]} equations
+ * @return {boolean}
+ */
+var equationsPossible = function(equations) {
+  const uf = new UF(256)
+  const group1 = equations.filter(ele => ele.indexOf('==') > -1)
+  const group12 = equations.filter(ele => ele.indexOf('!=') > -1)
+  for (const ele of group1) {
+    const nodes = ele.split('==')
+    uf.union(nodes[0].charCodeAt(0), nodes[1].charCodeAt(0))
+  }
+  for (const ele of group12) {
+    const nodes = ele.split('!=')
+    if (uf.connected(nodes[0].charCodeAt(0), nodes[1].charCodeAt(0))) {
+      return false
+    }
+  }
+  return true
+};
+
 // Union-Find 算法
 
 class UF {
@@ -39,3 +67,5 @@ class UF {
     return node
   }
 }
+// @lc code=end
+
