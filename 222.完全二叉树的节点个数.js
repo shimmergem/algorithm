@@ -18,8 +18,17 @@
  * @return {number}
  */
 var countNodes = function(root) {
-  if (!root) return 0
-  return countNodes(root.right) + countNodes(root.left) + 1
+  let count = 0
+  let queue = [root]
+  while (queue.length > 0) {
+    let node = queue.shift()
+    if (node) {
+      count++
+      queue.push(node.left)
+      queue.push(node.right)
+    }
+  }
+  return count
 };
 // @lc code=end
 
