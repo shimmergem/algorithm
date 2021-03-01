@@ -78,42 +78,19 @@ class LFUCache {
 
   increaseFreq(key) {
     let freq = this.kpMap.get(key)
-    if (!freq) {
-      this.kpMap.set(key, 1)
-      let set = this.pkMap.get(1)
-      if (!set) {
-        this.pkMap.set(1, new Set(key))
-        this.minFreq = 1
-      } else {
-        set.add(key)
-      }
+    this.pkMap.get(freq).delete(key)
+    if (this.pkMap.get(freq).size < 1) {
+      this.pkMap.delete(freq)
+      if (freq === this.minFreq) this.minFreq++
+    }
+    this.kpMap.set(key, freq + 1)
+    if (this.pkMap.has(freq + 1)) {
+      this.pkMap.get(freq + 1).add(key)
     } else {
-      this.pkMap.get(freq).delete(key)
-      if (this.pkMap.get(freq).size < 1) {
-        this.pkMap.delete(freq)
-        if (freq === this.minFreq) this.minFreq++
-      }
-      this.kpMap.set(key, freq + 1)
-      if (this.pkMap.has(freq + 1)) {
-        this.pkMap.get(freq + 1).add(key)
-      } else {
-        this.pkMap.set(freq + 1, new Set([key]))
-      }
+      this.pkMap.set(freq + 1, new Set([key]))
     }
   }
 }
-
-// let lfu = new LFUCache(2)
-// lfu.put(1, 1)
-// lfu.put(2, 2)
-// lfu.get(1)
-// lfu.put(3, 3)
-// lfu.get(2)
-// lfu.get(3)
-// lfu.put(4, 4)
-// lfu.get(1)
-// lfu.get(3)
-// lfu.get(4)
 
 /**
  * Your LFUCache object will be instantiated and called as such:
